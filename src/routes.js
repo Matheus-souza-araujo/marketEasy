@@ -2,7 +2,6 @@ const express = require('express')
 const routes = express.Router()
 const cors = require('cors');
 const axios = require('axios');
-const { request } = require('express');
 
 routes.use(express.json());
 routes.use(cors());
@@ -12,17 +11,23 @@ const dados = []
 
 routes.post('/', async(req, res) => {
   const { usuario, senha } = req.body
-  const auth = {usuario, senha}
+  const auth = { usuario, senha }
   const  { data }  = await axios.post('http://servicosflex.rpinfo.com.br:9000/v1.1/auth', auth)
+  
+  let { token, tokenExpiration } = data.response
 
-  const token = (data.response.token);
   const tokens = {
-    token
+    token,
+    tokenExpiration,
   };
 
-  tokeen.push(tokens)
+   const tokeenIndex = tokeen.indexOf(tokeen);
 
-  return res.json(token)
+    tokeen.splice(tokeenIndex, 1)
+
+    tokeen.push(tokens)
+
+    return res.json(tokens)
 }) 
 
 routes.get('/consulta', async (req, res) => {
@@ -33,15 +38,9 @@ routes.get('/consulta', async (req, res) => {
     }
   });
 
-  // for( let i = 0; data.response.produtos.length < i; i++){
-  //   console.log(i)
-  // }
-
   const produtos = (data.response.produtos)
-  const tm = produtos.length
-  console.log(tm)
   
-  for(let i = 0; tm > i; i++){
+  for(let i = 0; produtos.length > i; i++){
     let { Codigo, Descricao, Preco, CodigoBarras } = produtos[i]
   
   dados.push({
